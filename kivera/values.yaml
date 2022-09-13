@@ -12,7 +12,7 @@ image:
   pullPolicy: IfNotPresent
 
 service:
-  type: ClusterIP
+  type: LoadBalancer
   proxyPort: 8080
   mgmtPort: 8090
   #  Specify IP to whitelist if needed
