@@ -1,0 +1,10 @@
+apiVersion: v1
+name: kivera
+appVersion: v0.1.0
+description: Kivera proxy helm chart
+home: https://github.com/kivera-io/charts
+keywords:
+- kivera
+- proxy
+
+version: 0.1.0

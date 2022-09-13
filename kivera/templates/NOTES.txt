@@ -1,0 +1,42 @@
+
+1. Get the proxy endpoint by running these commands:
+
+{{- if contains "NodePort" .Values.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "kivera.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo $NODE_IP:$NODE_PORT
+
+{{- else if contains "LoadBalancer" .Values.service.type }}
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        You can watch the status of by running 'kubectl get svc -w {{ template "kivera.fullname" . }}'
+  export ENDPOINT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "kivera.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+  export PROXY_ENDPOINT=$ENDPOINT:{{ .Values.service.proxyPort }}
+  export MGMT_ENDPOINT=$ENDPOINT:{{ .Values.service.mgmtPort }}
+
+{{- else if contains "ClusterIP" .Values.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "kivera.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  kubectl port-forward $POD_NAME 8080:{{ .Values.service.proxyPort }} &
+  kubectl port-forward $POD_NAME 8090:{{ .Values.service.mgmtPort }} &
+
+  export PROXY_ENDPOINT=localhost:8080
+  export MGMT_ENDPOINT=localhost:8090
+
+{{- end }}
+
+2. Get the proxy certificate from the mgmt endpoint:
+
+  curl $MGMT_ENDPOINT/pub.cert > kivera-cert.pem
+
+3. Either add the cert to your OS trusted cert bundle, or export the following environment variables:
+
+  export REQUESTS_CA_BUNDLE="$PWD/kivera-cert.pem"
+  export SSL_CERT_FILE="$PWD/kivera-cert.pem"
+  export AWS_CA_BUNDLE="$PWD/kivera-cert.pem"
+
+3. Set your proxy environment variables:
+
+  export HTTPS_PROXY="http://$PROXY_ENDPOINT"
+  export HTTP_PROXY="http://$PROXY_ENDPOINT"
+  export https_proxy="http://$PROXY_ENDPOINT"
+  export http_proxy="http://"$PROXY_ENDPOINT"

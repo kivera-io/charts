@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "kivera.fullname" . }}
+  labels:
+    app: {{ template "kivera.name" . }}
+    chart: {{ template "kivera.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "kivera.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "kivera.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: proxy-port
+          containerPort: {{ .Values.service.proxyPort }}
+          protocol: TCP
+        - name: mgmt-port
+          containerPort: {{ .Values.service.mgmtPort }}
+          protocol: TCP
+        volumeMounts:
+        - name: cfgmap
+          mountPath: /opt/kivera/etc/credentials.json
+          subPath: credentials.json
+        livenessProbe:
+          tcpSocket:
+            port: mgmt-port
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: mgmt-port
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      volumes:
+      - name: cfgmap
+        configMap:
+          name: {{ template "kivera.fullname" . }}-conf
