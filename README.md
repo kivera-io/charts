@@ -20,6 +20,14 @@ Run the following commands from the root of of this repository.
 helm install kivera-proxy ./kivera --set-file credentials=path/to/credentials.json
 ```
 
+### Deploy a Specific Proxy Version
+
+```
+helm install kivera-proxy ./kivera \
+    --set image.tag=v1.11.1 \
+    --set-file credentials=path/to/credentials.json
+```
+
 ### Deploy Behind a Load Balancer
 
 The helm chart will deploy the service with type ClusterIP by default. In order to deploy behind a load balancer, set the following options.

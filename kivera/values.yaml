@@ -7,7 +7,6 @@ replicaCount: 1
 image:
   repository: public.ecr.aws/kivera/kivera-proxy
   tag: latest
-  pullPolicy: Always
 
 hpa:
   enabled: true

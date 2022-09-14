@@ -22,7 +22,7 @@ spec:
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        imagePullPolicy: {{ ternary "Always" "IfNotPresent" (eq .Values.image.tag "latest") }}
         resources:
         {{ toYaml .Values.resources | indent 10 }}
         ports:
