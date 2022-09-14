@@ -31,7 +31,7 @@ spec:
           containerPort: {{ .Values.service.mgmtPort }}
           protocol: TCP
         volumeMounts:
-        - name: cfgmap
+        - name: credentials
           mountPath: /opt/kivera/etc/credentials.json
           subPath: credentials.json
         livenessProbe:
@@ -45,6 +45,6 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 10
       volumes:
-      - name: cfgmap
-        configMap:
-          name: {{ template "kivera.fullname" . }}-conf
+      - name: credentials
+        secret:
+          secretName: {{ template "kivera.fullname" . }}-creds
