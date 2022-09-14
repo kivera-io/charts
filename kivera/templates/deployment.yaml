@@ -23,6 +23,8 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+        {{ toYaml .Values.resources | indent 10 }}
         ports:
         - name: proxy-port
           containerPort: {{ .Values.service.proxyPort }}
@@ -34,6 +36,16 @@ spec:
         - name: credentials
           mountPath: /opt/kivera/etc/credentials.json
           subPath: credentials.json
+        {{ if .Values.pubCert }}
+        - name: pub-cert
+          mountPath: /opt/kivera/etc/ca-cert.pem
+          subPath: ca-cert.pem
+        {{ end }}
+        {{ if .Values.pvtKey }}
+        - name: pvt-key
+          mountPath: /opt/kivera/etc/ca.pem
+          subPath: ca.pem
+        {{ end }}
         livenessProbe:
           tcpSocket:
             port: mgmt-port
@@ -48,3 +60,13 @@ spec:
       - name: credentials
         secret:
           secretName: {{ template "kivera.fullname" . }}-creds
+      {{ if .Values.pubCert }}
+      - name: pub-cert
+        configMap:
+          name: {{ template "kivera.fullname" . }}-pub-cert
+      {{ end }}
+      {{ if .Values.pvtKey }}
+      - name: pvt-key
+        secret:
+          secretName: {{ template "kivera.fullname" . }}-pvt-key
+      {{ end }}

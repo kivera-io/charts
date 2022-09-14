@@ -11,7 +11,7 @@ image:
 
 hpa:
   enabled: true
-  maxReplicas: 3
+  maxReplicas: 10
   cpu: 50
   memory: 50
 
@@ -24,3 +24,10 @@ service:
   # Specify external IP if needed
   #loadBalancerIP: ""
 
+resources: {}
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi

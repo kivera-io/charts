@@ -1,0 +1,14 @@
+{{- if .Values.pubCert -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kivera.fullname" . }}-pub-cert
+  labels:
+    app: {{ template "kivera.name" . }}
+    chart: {{ template "kivera.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  ca-cert.pem: |-
+    {{- .Values.pubCert | nindent 4 -}}
+{{- end }}

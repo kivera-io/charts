@@ -1,0 +1,15 @@
+{{- if .Values.pvtKey -}}
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: {{ template "kivera.fullname" . }}-pvt-key
+  labels:
+    app: {{ template "kivera.name" . }}
+    chart: {{ template "kivera.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+stringData:
+  ca.pem: |-
+    {{- .Values.pvtKey | nindent 4 -}}
+{{- end }}
