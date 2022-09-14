@@ -50,12 +50,31 @@ helm install kivera-proxy ./kivera \
 
 ## Verify Deployment
 
-Run the following commands to verify the deployment.
-
+Check the deployment status:
 ```
 kubectl get deployment kivera-proxy
+
+Output:
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+kivera-proxy   1/1     1            1           60s
+```
+
+Check the service status:
+```
 kubectl get svc kivera-proxy
+
+Output:
+NAME           TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                         AGE
+kivera-proxy   LoadBalancer   10.0.0.0        50.0.0.0      8080:32048/TCP,8090:30758/TCP   60s
+```
+
+Check the pod status:
+```
 kubectl get pod -l app=kivera
+
+Output:
+NAME                            READY   STATUS    RESTARTS   AGE
+kivera-proxy-5c5b8dd947-ldd8q   1/1     Running   0          60s
 ```
 
 If deployed with service type *LoadBlancer*.
