@@ -16,7 +16,7 @@ hpa:
   memory: 50
 
 service:
-  type: LoadBalancer
+  type: CluserIP
   proxyPort: 8080
   mgmtPort: 8090
   #  Specify IP to whitelist if needed
