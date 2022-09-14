@@ -80,9 +80,7 @@ kivera-proxy-5c5b8dd947-ldd8q   1/1     Running   0          60s
 If deployed with service type *LoadBlancer*.
 
 ```
-export ENDPOINT=$(kubectl get svc kivera-proxy -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-export PROXY_ENDPOINT=$ENDPOINT:8080
-export MGMT_ENDPOINT=$ENDPOINT:8090
+export PROXY_ENDPOINT=$(kubectl get svc kivera-proxy -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 
 If deployed with service type *ClusterIP*.
@@ -91,12 +89,11 @@ If deployed with service type *ClusterIP*.
 export POD_NAME=$(kubectl get pod -l app=kivera -o jsonpath="{.items[0].metadata.name}")
 kubectl port-forward $POD_NAME 8080:8080 &
 kubectl port-forward $POD_NAME 8090:8090 &
-export PROXY_ENDPOINT=localhost:8080
-export MGMT_ENDPOINT=localhost:8090
+export PROXY_ENDPOINT=localhost
 ```
 
 Verify that the proxy is running by invoking the proxy version endpoint.
 
 ```
-curl $MGMT_ENDPOINT/version
+curl $PROXY_ENDPOINT:8090/version
 ```
