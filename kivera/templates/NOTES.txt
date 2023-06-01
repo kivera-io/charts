@@ -39,4 +39,4 @@
   export HTTPS_PROXY="http://$PROXY_ENDPOINT"
   export HTTP_PROXY="http://$PROXY_ENDPOINT"
   export https_proxy="http://$PROXY_ENDPOINT"
-  export http_proxy="http://"$PROXY_ENDPOINT"
+  export http_proxy="http://$PROXY_ENDPOINT"
