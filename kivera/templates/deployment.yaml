@@ -9,6 +9,8 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  apiService:
+          create: true
   selector:
     matchLabels:
       app: {{ template "kivera.name" . }}
